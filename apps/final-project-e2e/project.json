@@ -1,0 +1,10 @@
+{
+  "name": "final-project-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/final-project-e2e/src",
+  "tags": [],
+  "implicitDependencies": ["final-project"],
+  "// targets": "to see all targets run: nx show project final-project-e2e --web",
+  "targets": {}
+}

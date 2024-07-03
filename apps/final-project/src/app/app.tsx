@@ -3,8 +3,7 @@ import NxWelcome from './nx-welcome';
 export function App() {
   return (
     <div>
-      FINAL PROJECT
-      {/* <NxWelcome title="final-project" /> */}
+      <h1>FINAL PROJECT</h1>
     </div>
   );
 }

@@ -4,7 +4,7 @@ USEFUL COMMANDS
 npm i -g nx => globally sets npm so I don't need to preface
 nx serve final-project => serves react frontend
 nx serve backend => serves nestjs backend
-nx e2e backend-e2e => runs nestjs backend specs
+nx e2e backend-e2e => runs nestjs backend specs, need to have localhost running
 nx e2e final-project-e2e => runs cypress tests
 
 <a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>

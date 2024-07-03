@@ -6,6 +6,7 @@ nx serve final-project => serves react frontend
 nx serve backend => serves nestjs backend
 nx e2e backend-e2e => runs nestjs backend specs, need to have localhost running
 nx e2e final-project-e2e => runs cypress tests
+npm run hhnode && <newterminal> cd apps/hardhat && npx hardhat ignition deploy ./ignition/modules/Lock.ts --network localhost => start local hardhat then in new terminal deploy to it.
 
 <a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
 

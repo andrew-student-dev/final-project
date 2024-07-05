@@ -6,7 +6,9 @@
     "hhtest": "cd apps/hardhat && npx hardhat test",
     "hhcompile": "cd apps/hardhat && npx hardhat compile",
     "hhnode": "cd apps/hardhat && npx hardhat node",
-    "hhdeploy": "cd apps/hardhat && npx hardhat ignition deploy ./ignition/modules/HelloWorld.ts --network localhost"
+    "hhdeploy": "cd apps/hardhat && npx hardhat ignition deploy ./ignition/modules/HelloWorld.ts --network localhost",
+    "backend": "nx serve backend",
+    "frontend": "nx serve final-project"
   },
   "private": true,
   "dependencies": {

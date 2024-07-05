@@ -16,7 +16,7 @@ export class AppService implements OnModuleInit {
 
   async onModuleInit() {
     console.log('foo', this.contractAddress);
-    this.provider = new JsonRpcProvider('http://localhost:8545', undefined, {
+    this.provider = new JsonRpcProvider('http://127.0.0.1:8545/', undefined, {
       staticNetwork: true,
     });
     this.contract = new ethers.Contract(

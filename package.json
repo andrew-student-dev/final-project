@@ -5,7 +5,8 @@
   "scripts": {
     "hhtest": "cd apps/hardhat && npx hardhat test",
     "hhcompile": "cd apps/hardhat && npx hardhat compile",
-    "hhnode": "cd apps/hardhat && npx hardhat node"
+    "hhnode": "cd apps/hardhat && npx hardhat node",
+    "hhdeploy": "cd apps/hardhat && npx hardhat ignition deploy ./ignition/modules/HelloWorld.ts --network localhost"
   },
   "private": true,
   "dependencies": {
@@ -13,6 +14,7 @@
     "@nestjs/core": "^10.0.2",
     "@nestjs/platform-express": "^10.0.2",
     "axios": "^1.6.0",
+    "dotenv": "^16.4.5",
     "ethers": "^6.13.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",

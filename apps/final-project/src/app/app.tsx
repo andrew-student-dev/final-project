@@ -1,7 +1,19 @@
 import { useEffect, useState } from 'react';
 import NxWelcome from './nx-welcome';
+import { useAccount } from "wagmi";
+import * as chains from "viem/chains";
 
 export function App() {
+  const { address } = useAccount();
+
+  // const targetNetwork = chains.hardhat
+
+  //1. connect my wallet on the localhost ui
+  //2 from useAccount see if you can console.log the address
+  //2. const {address, isConnecting, isDisconnected, chain} = useAccount(); 
+
+
+
   return (
     <>
       <div className="flex items-center flex-col flex-grow pt-10">
@@ -12,7 +24,7 @@ export function App() {
           </h1>
           <div className="flex justify-center items-center space-x-2 flex-col sm:flex-row">
             <p className="my-2 font-medium">Connected Address:</p>
-            {/* <Address address={connectedAddress} /> */}
+            <h3>{'address'}</h3>
           </div>
           <p className="text-center text-lg">
             Get started by editing{" "}

@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
+import "@rainbow-me/rainbowkit/styles.css";
+import {useAccount} from "wagmi";
 import NxWelcome from './nx-welcome';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { SetHelloText } from '../components/SetHelloText';
 
 export function App() {
+  const {address} = useAccount();
   return (
     <>
       <div className="flex items-center flex-col flex-grow pt-10">
@@ -13,6 +18,7 @@ export function App() {
           <div className="flex justify-center items-center space-x-2 flex-col sm:flex-row">
             <p className="my-2 font-medium">Connected Address:</p>
             {/* <Address address={connectedAddress} /> */}
+            <p>{address}</p>
           </div>
           <p className="text-center text-lg">
             Get started by editing{" "}
@@ -33,6 +39,10 @@ export function App() {
         </div>
 
         <HelloWorld></HelloWorld>
+        <TestButton />
+        <br></br>
+        <SetHelloText />
+
 
         <div className="flex-grow bg-base-300 w-full mt-16 px-8 py-12">
           <div className="flex justify-center items-center gap-12 flex-col sm:flex-row">
@@ -79,6 +89,10 @@ function HelloWorld(){
       }, []) 
 
   return(<h1>{data}</h1>);
+}
+
+function TestButton() {
+  return <ConnectButton />
 }
 
 export default App;

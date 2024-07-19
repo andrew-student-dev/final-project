@@ -4,6 +4,12 @@ import {useAccount} from "wagmi";
 import NxWelcome from './nx-welcome';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { SetHelloText } from '../components/SetHelloText';
+import { StartGame } from '../components/StartGame';
+import { CloseGame } from '../components/CloseGame';
+import { RequestTokens } from '../components/RequestTokens';
+import { EnterContestOld } from '../components/EnterContestOld';
+import { EnterContest } from '../components/EnterContest';
+
 
 export function App() {
   const {address} = useAccount();
@@ -13,14 +19,14 @@ export function App() {
         <div className="px-5">
           <h1 className="text-center">
             <span className="block text-2xl mb-2">Welcome to</span>
-            <span className="block text-4xl font-bold">Scaffold-ETH 2</span>
+            <span className="block text-4xl font-bold">The Price is Right</span>
           </h1>
           <div className="flex justify-center items-center space-x-2 flex-col sm:flex-row">
             <p className="my-2 font-medium">Connected Address:</p>
             {/* <Address address={connectedAddress} /> */}
             <p>{address}</p>
           </div>
-          <p className="text-center text-lg">
+          {/* <p className="text-center text-lg">
             Get started by editing{" "}
             <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
               packages/nextjs/app/page.tsx
@@ -35,13 +41,21 @@ export function App() {
             <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
               packages/hardhat/contracts
             </code>
-          </p>
+          </p> */}
         </div>
+        <EnterContestOld />
+        <RequestTokens />
+        <TestGetGameIsOpen />
+        {/* shows result of getAddress() in app.service.ts line 61 */} 
+        <TestGetAddress />
+        <StartGame />
+        <CloseGame />
+        {/* <TestFundFaucet /> */}
 
-        <HelloWorld></HelloWorld>
+        {/* <HelloWorld></HelloWorld>
         <TestButton />
         <br></br>
-        <SetHelloText />
+        <SetHelloText /> */}
 
 
         <div className="flex-grow bg-base-300 w-full mt-16 px-8 py-12">
@@ -93,6 +107,60 @@ function HelloWorld(){
 
 function TestButton() {
   return <ConnectButton />
+}
+
+function TestGetGameIsOpen() {
+  const [data, setData] = useState("")
+  const [isOpen, setIsOpen] = useState(false);
+  useEffect(() => {fetch("http://localhost:3000/api/game-is-open")
+  .then((result)=> result.json())
+  .then((httpData) => {
+    if(httpData.result == true){
+      setData("Game is open")
+      setIsOpen(true)
+    }
+    else {
+      setData("Game is closed")
+      setIsOpen(false)
+    }
+  })
+}, []) 
+
+return (
+  <div>
+    <p>{data}</p>
+    {isOpen && <EnterContestOld />}
+  </div>
+)
+}
+
+{/* shows result of getAddress() in app.service.ts line 61 */} 
+function TestGetAddress() {
+  const [data, setData] = useState("")
+  useEffect(() => {fetch("http://localhost:3000/api/address")
+  .then((result)=> result.json())
+  .then((httpData) => {
+    if(httpData.result){
+      setData(httpData.result)
+      return;
+    }
+    else {
+      setData("CONTRACT UNREACHABLE")
+    }
+  })
+}, []) 
+
+return(<h1>Token address: {data}</h1>);
+}
+
+function TestFundFaucet() {
+  const handleSubmit = () => {
+    fetch('http://localhost:3000/api/fund-faucet')
+  }
+
+  return (
+    <button className='btn bg-secondary' onClick={handleSubmit}>Fund Faucet</button>
+  )
 }
 
 export default App;

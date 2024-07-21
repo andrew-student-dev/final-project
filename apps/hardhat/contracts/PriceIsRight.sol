@@ -60,8 +60,8 @@ contract PriceIsRight {
     gameOpen = true;
   }
 
-  function enterContest(uint256 _guess) public payable whenGameOpen {
-    require(msg.value >= entryFee, "Insufficient funds"); 
+  function enterContest(uint256 _guess) public payable {
+    // require(msg.value >= entryFee, "Insufficient funds"); 
     // TODO: payment logic
     // TODO: Return change if applicable
     PriceGuess memory priceGuess;

@@ -7,7 +7,6 @@ import { SetHelloText } from '../components/SetHelloText';
 import { StartGame } from '../components/StartGame';
 import { CloseGame } from '../components/CloseGame';
 import { RequestTokens } from '../components/RequestTokens';
-import { EnterContestOld } from '../components/EnterContestOld';
 import { EnterContest } from '../components/EnterContest';
 
 
@@ -43,7 +42,6 @@ export function App() {
             </code>
           </p> */}
         </div>
-        <EnterContestOld />
         <RequestTokens />
         <TestGetGameIsOpen />
         {/* shows result of getAddress() in app.service.ts line 61 */} 
@@ -129,7 +127,7 @@ function TestGetGameIsOpen() {
 return (
   <div>
     <p>{data}</p>
-    {isOpen && <EnterContestOld />}
+    {isOpen && <EnterContest />}
   </div>
 )
 }

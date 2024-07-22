@@ -68,7 +68,7 @@ contract PriceIsRight {
     require(contestantPool.length > 0, 'No contestants have come on down!');
 
     uint256 closestUnderGuess = 0;
-    uint256 closestOverGuess = 0;
+    uint256 smallestOverage = 0;
     PriceGuess memory winningUnderBid;
     PriceGuess memory winningOverBid;
     bool foundWinningUnderBid = false;
@@ -87,12 +87,12 @@ contract PriceIsRight {
         foundWinningUnderBid = true;
       } else if (contestantGuess > _cost && !foundWinningUnderBid) {
         uint256 overage = contestantGuess - _cost;
-        if (closestOverGuess == 0) {
-          closestOverGuess = overage;
+        if (smallestOverage == 0) {
+          smallestOverage = overage;
           winningOverBid = contestantPool[i];
         } else {
-          if (overage < closestOverGuess) {
-            closestOverGuess = overage;
+          if (overage < smallestOverage) {
+            smallestOverage = overage;
             winningOverBid = contestantPool[i];
           }
         }

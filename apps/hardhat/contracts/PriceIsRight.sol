@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
-import {GoldenTicket} from "./GoldenTicket.sol";
-import {Token} from "./Token.sol";
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol"; 
+import {GoldenTicket} from './GoldenTicket.sol';
+import {Token} from './Token.sol';
+import {Ownable} from '@openzeppelin/contracts/access/Ownable.sol';
 
 contract PriceIsRight {
-
   struct PriceGuess {
     address contestant;
     uint256 guess;
@@ -35,7 +34,6 @@ contract PriceIsRight {
   address[] public contestantPool;
   // @notice addresses pulled from contestantPool will be matched in this PriceGuess array
   PriceGuess[] public guesses;
-  
 
   // @notice constructor function sets the deployer as owner and also deploys ERC20 and ERC721 contracts
   // @notice ERC20 (Token) contract takes two arguments, owner and initalSupply
@@ -46,8 +44,11 @@ contract PriceIsRight {
     token = new Token(owner, 1000000 * 10 * 18);
   }
 
-
-  function setGameState(string memory _itemName, bytes32 _itemDataHashed, uint256 _gameEndTime) external onlyBobBarker whenGameClosed {
+  function setGameState(
+    string memory _itemName,
+    bytes32 _itemDataHashed,
+    uint256 _gameEndTime
+  ) external onlyBobBarker whenGameClosed {
     // removed for testing
     // require(
     //         _gameEndTime > block.timestamp,
@@ -61,7 +62,7 @@ contract PriceIsRight {
   }
 
   function enterContest(uint256 _guess) public payable {
-    // require(msg.value >= entryFee, "Insufficient funds"); 
+    // require(msg.value >= entryFee, "Insufficient funds");
     // TODO: payment logic
     // TODO: Return change if applicable
     PriceGuess memory priceGuess;
@@ -75,19 +76,20 @@ contract PriceIsRight {
     string memory _itemName,
     uint256 _actualPrice,
     string memory _secret
-  ) 
-    public onlyBobBarker {
-      // removed for testing
-      // require(block.timestamp >= gameEndTime, "Too soon to close");
+  ) public whenGameOpen onlyBobBarker {
+    // removed for testing
+    // require(block.timestamp >= gameEndTime, "Too soon to close");
 
-      // @dev name, price, and secret are checked to make sure they match the commited values and then corresponding state variables are set allowing anyone to verify
-      bytes32 computedHash = keccak256(abi.encodePacked(_itemName, _actualPrice, _secret));
-      require(computedHash == itemDataHashed, "Revealed values do not match");
-      gameOpen = false;
-      itemName = _itemName;
-      actualPrice = _actualPrice;
-      secret = _secret;
-      // TODO: logic to determine winner 
+    // @dev name, price, and secret are checked to make sure they match the commited values and then corresponding state variables are set allowing anyone to verify
+    bytes32 computedHash = keccak256(
+      abi.encodePacked(_itemName, _actualPrice, _secret)
+    );
+    require(computedHash == itemDataHashed, 'Revealed values do not match');
+    gameOpen = false;
+    itemName = _itemName;
+    actualPrice = _actualPrice;
+    secret = _secret;
+    // TODO: logic to determine winner
   }
 
   // @dev to be called for the winner from 4 randomly selected contestants
@@ -97,22 +99,17 @@ contract PriceIsRight {
   }
 
   modifier whenGameClosed() {
-    require(!gameOpen, "Game is already open");
+    require(!gameOpen, 'Game is already open');
     _;
   }
 
   modifier whenGameOpen() {
-    require(
-      gameOpen && block.timestamp < gameEndTime,
-      "Game is closed"
-    );
+    require(gameOpen && block.timestamp < gameEndTime, 'Game is closed');
     _;
   }
 
   modifier onlyBobBarker() {
-    require(msg.sender == owner, "Caller is not Bob Barker");
+    require(msg.sender == owner, 'Caller is not Bob Barker');
     _;
   }
-
-
 }

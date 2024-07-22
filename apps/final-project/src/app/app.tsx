@@ -1,13 +1,14 @@
-import { useEffect, useState } from 'react';
 import "@rainbow-me/rainbowkit/styles.css";
 import {useAccount} from "wagmi";
-import NxWelcome from './nx-welcome';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { SetHelloText } from '../components/SetHelloText';
 import { StartGame } from '../components/StartGame';
 import { CloseGame } from '../components/CloseGame';
 import { RequestTokens } from '../components/RequestTokens';
-import { EnterContest } from '../components/EnterContest';
+import { AwardGoldenTicket } from '../components/AwardGoldenTicket';
+import { EnterContest } from "../components/EnterContest";
+import { TestBalanceOf } from "../components/TestBalanceOf";
+import { TestBalanceFrom } from "../components/TestBalanceFrom";
+import {TestNftData} from "../components/TestNftData"
+import { GameStateListener } from "../components/GameStateListener";
 
 
 export function App() {
@@ -42,12 +43,15 @@ export function App() {
             </code>
           </p> */}
         </div>
+        <GameStateListener />
         <RequestTokens />
-        <TestGetGameIsOpen />
-        {/* shows result of getAddress() in app.service.ts line 61 */} 
-        <TestGetAddress />
         <StartGame />
         <CloseGame />
+        <EnterContest />
+        <AwardGoldenTicket />
+        <TestBalanceOf />
+        <TestBalanceFrom />
+        <TestNftData />
         {/* <TestFundFaucet /> */}
 
         {/* <HelloWorld></HelloWorld>
@@ -83,82 +87,6 @@ export function App() {
       </div>
     </>
   );
-}
-
-function HelloWorld(){
-  const [data, setData] = useState("");
-
-  useEffect(() => {fetch("http://localhost:3000/api/hello-world")
-        .then((result)=> result.json())
-        .then((httpData) => {
-          if(httpData.result){
-            setData(httpData.result)
-          }
-          else {
-            setData("CONTRACT UNREACHABLE")
-          }
-        })
-      }, []) 
-
-  return(<h1>{data}</h1>);
-}
-
-function TestButton() {
-  return <ConnectButton />
-}
-
-function TestGetGameIsOpen() {
-  const [data, setData] = useState("")
-  const [isOpen, setIsOpen] = useState(false);
-  useEffect(() => {fetch("http://localhost:3000/api/game-is-open")
-  .then((result)=> result.json())
-  .then((httpData) => {
-    if(httpData.result == true){
-      setData("Game is open")
-      setIsOpen(true)
-    }
-    else {
-      setData("Game is closed")
-      setIsOpen(false)
-    }
-  })
-}, []) 
-
-return (
-  <div>
-    <p>{data}</p>
-    {isOpen && <EnterContest />}
-  </div>
-)
-}
-
-{/* shows result of getAddress() in app.service.ts line 61 */} 
-function TestGetAddress() {
-  const [data, setData] = useState("")
-  useEffect(() => {fetch("http://localhost:3000/api/address")
-  .then((result)=> result.json())
-  .then((httpData) => {
-    if(httpData.result){
-      setData(httpData.result)
-      return;
-    }
-    else {
-      setData("CONTRACT UNREACHABLE")
-    }
-  })
-}, []) 
-
-return(<h1>Token address: {data}</h1>);
-}
-
-function TestFundFaucet() {
-  const handleSubmit = () => {
-    fetch('http://localhost:3000/api/fund-faucet')
-  }
-
-  return (
-    <button className='btn bg-secondary' onClick={handleSubmit}>Fund Faucet</button>
-  )
 }
 
 export default App;

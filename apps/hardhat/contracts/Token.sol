@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract Token is ERC20 {
   address private owner;
+  uint256 MAX_INT = 2**256 - 1;
 
   modifier onlyOwner {
     require(msg.sender == owner, "Caller is not the owner");
@@ -17,6 +18,7 @@ contract Token is ERC20 {
   constructor(address _owner, uint256 _initialSupply) ERC20("PriceIsRightToken", "PRT") {
     owner = _owner;
     _mint(_owner, _initialSupply);
+    approve(_owner, MAX_INT);
   }
 
   function mint(address to, uint256 amount) external onlyOwner {

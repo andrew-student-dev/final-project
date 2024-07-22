@@ -1,0 +1,18 @@
+{
+  "title": "Asset Metadata",
+  "type": "object",
+  "properties": {
+      "name": {
+          "type": "string",
+          "description": "Golden Ticket"
+      },
+      "description": {
+          "type": "string",
+          "description": "Access to Price is Right mini-game"
+      },
+      "image": {
+          "type": "string",
+          "description": "http://127.0.0.1:8080/ipfs/QmSbDvs82zuamKfxX7JEGNZ5ug6aQEfrohw4xwzRVA4tvL"
+      }
+  }
+}

@@ -31,7 +31,7 @@ contract PriceIsRight {
   // @notice cost of a ticket to participate in game (submit PriceGuesses)
   uint256 public entryFee;
   // @notice 4 random contestants will be selected from this array along with their associated PriceGuesses
-  address[] public contestantPool;
+  PriceGuess[] public contestantPool;
   // @notice addresses pulled from contestantPool will be matched in this PriceGuess array
   PriceGuess[] public guesses;
 
@@ -59,6 +59,22 @@ contract PriceIsRight {
     itemDataHashed = _itemDataHashed;
     gameEndTime = _gameEndTime;
     gameOpen = true;
+  }
+
+
+  function comeOnDown() public whenGameOpen onlyBobBarker {
+    require(
+      contestantPool.length == 0,
+      'Contestants have already been selected'
+    );
+    uint256 contestantCount = contestantPool.length < 4
+      ? contestantPool.length
+      : 4;
+
+    for (uint i = 0; i < contestantCount; i++) {
+      PriceGuess memory drawnContestant = guesses[i];
+      contestantPool.push(drawnContestant);
+    }
   }
 
   function enterContest(uint256 _guess) public payable {

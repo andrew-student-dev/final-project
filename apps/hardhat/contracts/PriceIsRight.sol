@@ -61,6 +61,46 @@ contract PriceIsRight {
     gameOpen = true;
   }
 
+  //Closest without going over, unless eveyrone is over then closest.
+  function determineWinner(
+    uint256 _cost
+  ) public view whenGameOpen onlyBobBarker returns (PriceGuess memory) {
+    require(contestantPool.length > 0, 'No contestants have come on down!');
+
+    uint256 closestUnderGuess = 0;
+    uint256 closestOverGuess = 0;
+    PriceGuess memory winningUnderBid;
+    PriceGuess memory winningOverBid;
+    bool foundWinningUnderBid = false;
+
+    for (uint256 i = 0; i < contestantPool.length; i++) {
+      uint256 contestantGuess = contestantPool[i].guess;
+      if (contestantGuess == _cost) {
+        winningUnderBid = contestantPool[i];
+        foundWinningUnderBid = true;
+        break;
+      } else if (
+        contestantGuess < _cost && contestantGuess > closestUnderGuess
+      ) {
+        closestUnderGuess = contestantGuess;
+        winningUnderBid = contestantPool[i];
+        foundWinningUnderBid = true;
+      } else if (contestantGuess > _cost && !foundWinningUnderBid) {
+        uint256 overage = contestantGuess - _cost;
+        if (closestOverGuess == 0) {
+          closestOverGuess = overage;
+          winningOverBid = contestantPool[i];
+        } else {
+          if (overage < closestOverGuess) {
+            closestOverGuess = overage;
+            winningOverBid = contestantPool[i];
+          }
+        }
+      }
+    }
+
+    return foundWinningUnderBid ? winningUnderBid : winningOverBid;
+  }
 
   function comeOnDown() public whenGameOpen onlyBobBarker {
     require(
@@ -106,6 +146,7 @@ contract PriceIsRight {
     actualPrice = _actualPrice;
     secret = _secret;
     // TODO: logic to determine winner
+    PriceGuess memory winner = determineWinner(actualPrice);
   }
 
   // @dev to be called for the winner from 4 randomly selected contestants

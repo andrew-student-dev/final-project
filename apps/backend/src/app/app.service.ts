@@ -11,8 +11,6 @@ import {hardhat} from "viem/chains"
 import {createWalletClient, http} from "viem";
 dotenv.config();
 
-const MAX_UINT256 = 115792089237316195423570985008687907853269984665640564039457584007913129639935n;
-
 @Injectable()
 export class AppService implements OnModuleInit {
   private provider: ethers.JsonRpcProvider;
@@ -31,6 +29,8 @@ export class AppService implements OnModuleInit {
 
   private readonly contractAddress = process.env.PRICE_IS_RIGHT_CONTRACT_ADDRESS;
   private readonly contractABI = priceIsRightJSON.abi;
+
+  
 
   async onModuleInit() {
     const alchemyUrl = process.env.RPC_ENDPOINT_URL;
@@ -65,6 +65,8 @@ export class AppService implements OnModuleInit {
       this.signer
     )
 
+    
+
     this.walletClient = createWalletClient({
       account: "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
       chain: hardhat,
@@ -82,7 +84,7 @@ export class AppService implements OnModuleInit {
   // }
 
   async getAddress() {
-    return await this.token.getAddress();
+    return await this.contract.goldenTicket();
   }
 
   async requestFaucetTokens(address: `0x${string}`) {

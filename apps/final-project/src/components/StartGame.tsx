@@ -1,5 +1,7 @@
 import { useState } from "react";
-import {useAccount} from "wagmi";
+import {useAccount, useWalletClient} from "wagmi";
+import {ethers} from "ethers";
+import { usePriceIsRightContract } from "./usePriceIsRightContract";
 
 export function StartGame() {
   const [itemName, setItemName] = useState("");
@@ -8,7 +10,38 @@ export function StartGame() {
   const [endTime, setEndTime] = useState(0);
   const [feedback, setFeedback] = useState("");
 
-  
+  const {address} = useAccount();
+  const {data: walletClient} = useWalletClient();
+
+  const {contract, provider, priceIsRightAddress} = usePriceIsRightContract();
+
+  const sendTransaction = async () => {
+    //@ts-ignore
+  const nonce = await provider.getTransactionCount(address)
+    if(!walletClient || !address || !contract) return;
+    const hash = ethers.solidityPackedKeccak256(["string", "uint256", "string"], [itemName, actualPrice, secret])
+    // const currentBlockNumber = await provider.getBlockNumber();
+    const currentBlock = await provider.getBlock("latest");
+    const blockTime = currentBlock?.timestamp;
+    //@ts-ignore
+    const gameEndTime = blockTime + endTime;
+    const data = contract.interface.encodeFunctionData("setGameState", [itemName, hash, gameEndTime])
+    const tx = {
+      nonce: nonce,
+      from: address,
+      to: priceIsRightAddress,
+      data: data,
+    }
+
+    try {
+      //@ts-ignore
+      const txResponse = await walletClient.sendTransaction(tx);
+      setFeedback("Contestants, come on down!")
+    } catch(error) {
+      setFeedback("Something went wrong")
+      console.error(error);
+    }
+  }
 
   const handleSubmit = () => {
     fetch("http://localhost:3000/api/start-game", {
@@ -81,12 +114,12 @@ export function StartGame() {
           />
         </label>
       </div>
-      <div className="btn bg-secondary">
-        <button onClick={handleSubmit} > Submit Data </button>
+      <div>
+        <button className="btn bg-secondary" onClick={sendTransaction} > Submit Data </button>
       </div>
       {feedback && 
         <div>
-          <p>Contestants, come on down!</p>
+          <p>{feedback}</p>
         </div>
       }
       </div>

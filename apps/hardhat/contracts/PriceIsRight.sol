@@ -35,13 +35,16 @@ contract PriceIsRight {
   // @notice addresses pulled from contestantPool will be matched in this PriceGuess array
   PriceGuess[] public guesses;
 
+  event GameStateSet(bytes32 indexed itemDataHashed, bool gameOpen);
+
   // @notice constructor function sets the deployer as owner and also deploys ERC20 and ERC721 contracts
   // @notice ERC20 (Token) contract takes two arguments, owner and initalSupply
   // initial supply = 1,000,000?
   constructor() {
     owner = msg.sender;
     goldenTicket = new GoldenTicket();
-    token = new Token(owner, 1000000 * 10 * 18);
+    token = new Token(address(this), 1000000 * 10 * 18);
+    entryFee = 10 * 10 ** 18;
   }
 
   function setGameState(
@@ -59,6 +62,8 @@ contract PriceIsRight {
     itemDataHashed = _itemDataHashed;
     gameEndTime = _gameEndTime;
     gameOpen = true;
+
+    emit GameStateSet(itemDataHashed, gameOpen);
   }
 
   //Closest without going over, unless eveyrone is over then closest.
@@ -118,7 +123,15 @@ contract PriceIsRight {
   }
 
   function enterContest(uint256 _guess) public payable {
-    // require(msg.value >= entryFee, "Insufficient funds");
+    require(
+      token.balanceOf(msg.sender) >= entryFee,
+      'Insufficient token balance'
+    );
+    require(
+      token.transferFrom(msg.sender, address(this), entryFee),
+      'Token transfer failed'
+    );
+
     // TODO: payment logic
     // TODO: Return change if applicable
     PriceGuess memory priceGuess;
@@ -151,8 +164,26 @@ contract PriceIsRight {
 
   // @dev to be called for the winner from 4 randomly selected contestants
   // MIGHT BE BETTER AS INTERNAL METHOD
-  function awardGoldenTicket(address winner) public onlyBobBarker {
+  function awardGoldenTicket(address winner) public {
     goldenTicket.mint(winner);
+  }
+
+  function transferTokens(address participant, uint256 amount) external {
+    token.transfer(participant, amount);
+  }
+
+  function mintTokens(address to, uint256 amount) external {
+    token.mint(to, amount);
+  }
+
+  function testBalance() external view returns (uint256) {
+    return token.balanceOf(address(this));
+  }
+
+  function testBalanceFromAddress(
+    address from
+  ) external view returns (uint256) {
+    return token.balanceOf(from);
   }
 
   modifier whenGameClosed() {

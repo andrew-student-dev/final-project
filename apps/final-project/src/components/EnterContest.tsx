@@ -2,6 +2,7 @@ import {useAccount, useWalletClient, useSendTransaction} from "wagmi";
 import {ethers, Wallet, JsonRpcProvider} from "ethers";
 import { useEffect, useState } from "react";
 import * as priceIsRightJson from "../../../hardhat/artifacts/contracts/PriceIsRight.sol/PriceIsRight.json"
+import * as tokenJson from "../../../hardhat/artifacts/contracts/Token.sol/Token.json";
 
 export function EnterContest() {
 
@@ -13,6 +14,12 @@ export function EnterContest() {
   const priceIsRightAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
   const provider = new JsonRpcProvider("http://127.0.0.1:8545");
   const contract = new ethers.Contract(priceIsRightAddress, priceIsRightABI, provider);
+
+  const tokenABI = tokenJson.abi
+  const tokenAddress = "0xB7A5bd0345EF1Cc5E66bf61BdeC17D2461fBd968";
+  const tokenContract = new ethers.Contract(tokenAddress, tokenABI, provider);
+  
+
 
   const {address} = useAccount();
   const {data: walletClient} = useWalletClient();
@@ -30,15 +37,39 @@ export function EnterContest() {
     fetchItemName();
   }, [])
 
-  const sendTransaction = async () => {
+  const approveTokens = async () => {
     if(!walletClient || !address) return;
-    const testBet = 800;
-    const data = contract.interface.encodeFunctionData("enterContest", [testBet]);
+    const ammountToApprove = ethers.parseEther("10");
+    const data = tokenContract.interface.encodeFunctionData("approve", [priceIsRightAddress, ammountToApprove]);
+
     const tx = {
+      from: address,
+      to: tokenAddress,
+      data: data
+    }
+
+    try {
+      //@ts-ignore
+      const txResponse = await walletClient.sendTransaction(tx);
+      setFeedback("Tokens approved!")
+      enterContest()
+    } catch(error) {
+      setFeedback("Something went wrong")
+      console.error(error);
+    }
+
+  }
+
+  const enterContest = async () => {
+    //@ts-ignore
+    const nonce = await provider.getTransactionCount(address)
+    if(!walletClient || !address) return;
+    const data = contract.interface.encodeFunctionData("enterContest", [userBet]);
+    const tx = {
+      nonce: nonce,
       from: address,
       to: priceIsRightAddress,
       data: data,
-      value: ethers.parseEther("0.0001"),
     }
 
     try {
@@ -77,7 +108,7 @@ export function EnterContest() {
           </label>
         </div>
         <div className="flex items-center">
-          <button onClick={sendTransaction} className="btn bg-secondary justify-center">Submit</button>
+          <button onClick={approveTokens} className="btn bg-secondary justify-center">Submit</button>
         </div>
         {feedback && <p>{feedback}</p>}
       </div>

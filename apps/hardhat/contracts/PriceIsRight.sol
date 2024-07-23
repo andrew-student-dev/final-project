@@ -69,7 +69,7 @@ contract PriceIsRight {
   //Closest without going over, unless eveyrone is over then closest.
   function determineWinner(
     uint256 _cost
-  ) public view whenGameOpen onlyBobBarker returns (PriceGuess memory) {
+  ) public view onlyBobBarker returns (PriceGuess memory) {
     require(contestantPool.length > 0, 'No contestants have come on down!');
 
     uint256 closestUnderGuess = 0;
@@ -107,20 +107,20 @@ contract PriceIsRight {
     return foundWinningUnderBid ? winningUnderBid : winningOverBid;
   }
 
-  function comeOnDown() public whenGameOpen onlyBobBarker {
-    require(
-      contestantPool.length == 0,
-      'Contestants have already been selected'
-    );
-    uint256 contestantCount = contestantPool.length < 4
-      ? contestantPool.length
-      : 4;
+  function comeOnDown() public onlyBobBarker {
+  require(
+    contestantPool.length == 0,
+    'Contestants have already been selected'
+  );
+  uint256 contestantCount = guesses.length < 4
+    ? guesses.length
+    : 4;
 
-    for (uint i = 0; i < contestantCount; i++) {
-      PriceGuess memory drawnContestant = guesses[i];
-      contestantPool.push(drawnContestant);
-    }
+  for (uint i = 0; i < contestantCount; i++) {
+    PriceGuess memory drawnContestant = guesses[i];
+    contestantPool.push(drawnContestant);
   }
+}
 
   function enterContest(uint256 _guess) public payable {
     require(
@@ -131,9 +131,6 @@ contract PriceIsRight {
       token.transferFrom(msg.sender, address(this), entryFee),
       'Token transfer failed'
     );
-
-    // TODO: payment logic
-    // TODO: Return change if applicable
     PriceGuess memory priceGuess;
 
     priceGuess.contestant = msg.sender;
@@ -145,7 +142,7 @@ contract PriceIsRight {
     string memory _itemName,
     uint256 _actualPrice,
     string memory _secret
-  ) public whenGameOpen onlyBobBarker {
+  ) public onlyBobBarker {
     // removed for testing
     // require(block.timestamp >= gameEndTime, "Too soon to close");
 
@@ -158,13 +155,14 @@ contract PriceIsRight {
     itemName = _itemName;
     actualPrice = _actualPrice;
     secret = _secret;
-    // TODO: logic to determine winner
+    
     PriceGuess memory winner = determineWinner(actualPrice);
+    awardGoldenTicket(winner.contestant);
   }
 
   // @dev to be called for the winner from 4 randomly selected contestants
   // MIGHT BE BETTER AS INTERNAL METHOD
-  function awardGoldenTicket(address winner) public {
+  function awardGoldenTicket(address winner) internal {
     goldenTicket.mint(winner);
   }
 

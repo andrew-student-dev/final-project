@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePriceIsRightContract } from "./usePriceIsRightContract";
 
 export function CloseGame() {
   const [itemName, setItemName] = useState("");
@@ -6,7 +7,33 @@ export function CloseGame() {
   const [secret, setSecret] = useState("");
   const [feedback, setFeedback] = useState("");
 
-  const handleSubmit = () => {
+  const {contract, priceIsRightAddress, provider, address, walletClient} = usePriceIsRightContract();
+
+  const handleSubmit = async () => {
+    //@ts-ignore
+    const nonce = await provider.getTransactionCount(address);
+    if(!contract) return;
+    const data = contract.interface.encodeFunctionData("closeGame", [itemName, actualPrice, secret])
+    const tx = {
+      nonce: nonce,
+      from: address,
+      to: priceIsRightAddress,
+      data: data 
+    }
+
+    try {
+      //@ts-ignore
+      const response = await walletClient.sendTransaction(tx);
+      console.log(response);
+      setFeedback("We have a winner!")
+    } catch(error) {
+      setFeedback("Something went wrong")
+      console.error(error);
+    }
+
+  }
+
+  const handleSubmit2 = () => {
     fetch("http://localhost:3000/api/close-game", {
       method: 'POST',
       headers: {

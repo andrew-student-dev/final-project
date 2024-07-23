@@ -9,7 +9,7 @@ import { TestBalanceOf } from "../components/TestBalanceOf";
 import { TestBalanceFrom } from "../components/TestBalanceFrom";
 import {TestNftData} from "../components/TestNftData"
 import { GameStateListener } from "../components/GameStateListener";
-
+import { ComeOnDown } from "../components/ComeOnDown";
 
 export function App() {
   const {address} = useAccount();
@@ -52,6 +52,7 @@ export function App() {
         <TestBalanceOf />
         <TestBalanceFrom />
         <TestNftData />
+        <ComeOnDown />
         {/* <TestFundFaucet /> */}
 
         {/* <HelloWorld></HelloWorld>

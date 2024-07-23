@@ -9,7 +9,7 @@ export function RequestTokens() {
   const {contract, provider, priceIsRightAddress} = usePriceIsRightContract();
 
   const [feedback, setFeedback] = useState("")
-  const [data, setData] = useState("");
+
 
   
 
@@ -35,30 +35,6 @@ export function RequestTokens() {
       console.error(error)
     }
   }
-  
-  const handleSubmit: any = () => {
-    fetch("http://localhost:3000/api/request-tokens", {
-    method: 'POST',
-    headers: {
-      'Content-type' : 'application/json'
-    },
-    body : JSON.stringify({
-      address: address
-    })
-  })
-  .then((res) => {
-    if(!res.ok) {
-      setFeedback("error")
-      throw new Error("unable to complete request")
-    }
-
-    return res.json();
-  })
-  .then((d) => {
-    console.log(d);
-    setFeedback("Thank you for purchasing Price is Right Tokens!");
-  })
-}
 
   return (
     <div>
